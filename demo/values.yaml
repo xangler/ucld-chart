@@ -1,0 +1,56 @@
+# Default values for cloud-demo-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  nameSuffix: default
+  replicaCount: 3
+
+image:
+  pullSecrets: ["inner"]
+  pullPolicy: IfNotPresent
+  dockerRegistry: registry.xxx.com
+  dockerRepo: demo
+  dockerImage: cloud-demo-service
+  dockerTag: master
+
+container:
+  httpPort: 8080
+  rpcPort: 8081
+  metricsPort: 8082
+  ingress: demo.xxx.com
+
+podProbe:
+  startupProbe:
+    httpGet:
+      path: /v1/health
+      port: 8080
+    failureThreshold: 20
+    periodSeconds: 10
+  livenessProbe:
+    httpGet:
+      path: /v1/health
+      port: 8080
+    failureThreshold: 120
+    periodSeconds: 30
+    successThreshold: 1
+    timeoutSeconds: 3
+  readinessProbe:
+    httpGet:
+      path: /v1/health
+      port: 8080
+    failureThreshold: 30
+    periodSeconds: 30
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+containerSecurityContext: {}
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

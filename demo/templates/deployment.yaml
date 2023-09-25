@@ -1,0 +1,80 @@
+{{- $fullname := include "demo.fullname" . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $fullname }}
+  annotations:
+    configmap.reloader.stakater.com/reload: {{ $fullname }}-config
+  labels:
+    {{- include "demo.servicelabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.global.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "demo.podlabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "demo.podlabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ $fullname }}
+          {{- with .Values.containerSecurityContext }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          {{- end }}
+          image: {{ include "demo.imagename" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - "/usr/bin/cloud-demo-service -c /config/cloud-demo-service.yaml"
+          ports:
+            - name: http
+              containerPort: {{ .Values.container.httpPort }}
+              protocol: TCP
+            - name: rpc
+              containerPort: {{ .Values.container.rpcPort }}
+              protocol: TCP
+            - name: metrics
+              containerPort: {{ .Values.container.metricsPort }}
+              protocol: TCP
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          volumeMounts:
+            - name: {{ .Chart.Name }}-config
+              mountPath: /config/
+          {{- with .Values.podProbe }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: {{ .Chart.Name }}-config
+          configMap:
+            name: {{ $fullname }}-config
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
