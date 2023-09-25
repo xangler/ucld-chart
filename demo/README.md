@@ -13,6 +13,7 @@ A Helm chart for Kubernetes
 | container.ingress | string | `"demo.xxx.com"` |  |
 | container.metricsPort | int | `8082` |  |
 | container.rpcPort | int | `8081` |  |
+| containerSecurityContext | object | `{}` |  |
 | global.nameSuffix | string | `"default"` |  |
 | global.replicaCount | int | `3` |  |
 | image.dockerImage | string | `"cloud-demo-service"` |  |
@@ -20,7 +21,7 @@ A Helm chart for Kubernetes
 | image.dockerRepo | string | `"demo"` |  |
 | image.dockerTag | string | `"master"` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.pullSecrets[0] | string | `"inner"` |  |
+| image.pullSecrets | string | `"inner"` |  |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
 | podProbe.livenessProbe.failureThreshold | int | `120` |  |
@@ -39,6 +40,5 @@ A Helm chart for Kubernetes
 | podProbe.startupProbe.periodSeconds | int | `10` |  |
 | podSecurityContext | object | `{}` |  |
 | resources | object | `{}` |  |
-| securityContext | object | `{}` |  |
 | tolerations | list | `[]` |  |
 

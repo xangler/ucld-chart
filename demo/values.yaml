@@ -6,7 +6,7 @@ global:
   replicaCount: 3
 
 image:
-  pullSecrets: ["inner"]
+  pullSecrets: "inner"
   pullPolicy: IfNotPresent
   dockerRegistry: registry.xxx.com
   dockerRepo: demo
