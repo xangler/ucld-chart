@@ -29,6 +29,9 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.image.pullSecrets }}
       {{- end }}
+      {{- if .Values.container.serviceAccount }}
+      serviceAccountName: {{ .Values.container.serviceAccount }}
+      {{- end }}
       containers:
         - name: {{ $fullname }}
           {{- with .Values.containerSecurityContext }}

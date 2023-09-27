@@ -18,6 +18,7 @@ container:
   rpcPort: 8081
   metricsPort: 8082
   ingress: demo.xxx.com
+  serviceAccount: ""
 
 podProbe:
   startupProbe:
